@@ -61,3 +61,33 @@ fetchGetBtn.addEventListener("click", () => {
 });
 
 
+// 2. Attach an event listener to "xhrGetBtn" button to make a GET request using XMLHttpRequest
+xhrGetBtn.addEventListener("click", () => {
+    clearPreviousMsg();
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("GET", `${API_URL}/2`, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                console.log(data);
+                displayFetchedData(`
+                    <h4>${data.title}</h4>
+                    <p>${data.body}</p>
+                `);
+            } else {
+                console.error(`Error getting data (XHR): ${xhr.status}`);
+                displayErrMsg(`Error getting data (XHR): ${xhr.status}`);
+            }
+        }
+    };
+        
+    xhr.onerror = () => {
+        console.error("Network error (XHR): Failed to get data.");
+        displayErrMsg("Network error (XHR): Failed to get data.");
+    };
+        
+    xhr.send();
+});
+
