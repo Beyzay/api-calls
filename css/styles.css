@@ -1,3 +1,10 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+#fetch-get-btn, #xhr-get-btn {
+    background-color:ghostwhite;
+    color: darkmagenta;
+    border-color: darkmagenta;
+}
+
