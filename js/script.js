@@ -103,7 +103,7 @@ form.addEventListener("submit", (e) => {
     const content = postContent.value.trim();
 
     // Validate form input
-    if ((method === "PUT") && !id) {
+    if ((method === "PUT" || method === "DELETE") && !id) {
         return displayErrMsg("Post ID is required for updating and deleting a post!");
     }
 
@@ -196,5 +196,36 @@ form.addEventListener("submit", (e) => {
             body: content,
             userId: 1
         }));
+    }
+
+    // 5. Make a DELETE request using fetch()
+    else if (method === "DELETE") {
+
+        // Disable the submit button before request
+        submitBtn.disabled = true;
+
+        fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error (`Network response was not ok (DELETE) (${response.status})`);
+            } else {
+                displayFetchedData(`
+                    <p class="text-danger">Post sucessfully deleted! (Post ID: ${id})</p>
+                `);
+
+                // Clear form fields on success
+                form.reset();
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting data: ", error.message);
+            displayErrMsg("Error deleting data: ", error.message);
+        })
+        .finally(() => {
+            // Re-enable the submit button after request
+            submitBtn.disabled = false;
+        });
     }
 });
