@@ -103,7 +103,11 @@ form.addEventListener("submit", (e) => {
     const content = postContent.value.trim();
 
     // Validate form input
-    if ((method === "POST") && (!title || !content)) {
+    if ((method === "PUT") && !id) {
+        return displayErrMsg("Post ID is required for updating and deleting a post!");
+    }
+
+    if ((method === "POST" || method === "PUT") && (!title || !content)) {
         return displayErrMsg("Post title and content are required for adding and updating a post!");
     }
 
@@ -150,4 +154,47 @@ form.addEventListener("submit", (e) => {
         });
     }
 
+    // 4. Make a PUT request using XMLHttpRequest
+    else if (method === "PUT") {
+        // Disable the submit button before request
+        submitBtn.disabled = true;
+
+        const xhr = new XMLHttpRequest();
+        
+        xhr.open("PUT", `${API_URL}/${id}`, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    console.log(data);
+                    displayFetchedData(`
+                        <p class="text-success">Post successfully updated!</p>
+                        <h4>${data.title}</h4>
+                        <p>${data.body}</p>
+                    `);
+                    
+                    // Clear form fields on success
+                    form.reset();
+                } else {
+                    console.error(`Error updating data (XHR): ${xhr.status}`);
+                    displayErrMsg(`Error updating data (XHR): ${xhr.status}`);
+                }
+                // Re-enable the submit button after request
+                submitBtn.disabled = false;
+            }
+        };
+        
+        xhr.onerror = () => {
+            console.error("Network error (XHR): Failed to update data.");
+            displayErrMsg("Network error (XHR): Failed to update data.");
+        };
+
+        xhr.send(JSON.stringify({
+            id,
+            title,
+            body: content,
+            userId: 1
+        }));
+    }
 });
