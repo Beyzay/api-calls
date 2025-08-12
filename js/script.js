@@ -91,3 +91,63 @@ xhrGetBtn.addEventListener("click", () => {
     xhr.send();
 });
 
+// Attach an event listener to "form" button to handle form submision
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    clearPreviousMsg();
+
+    // Assign DOM Elements to variables
+    const method = formMethodSelect.value;
+    const id = postId.value.trim();
+    const title = postTitle.value.trim();
+    const content = postContent.value.trim();
+
+    // Validate form input
+    if ((method === "POST") && (!title || !content)) {
+        return displayErrMsg("Post title and content are required for adding and updating a post!");
+    }
+
+    // 3. Make a POST request using fetch()
+    if (method === "POST") {
+
+        // Disable the submit button before request
+        submitBtn.disabled = true;
+
+        fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title,
+                body: content,
+                userId: 1
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok (POST) (${response.status})`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayFetchedData(`
+                <p class="text-success">Post successfully added! (Post ID: ${data.id})</p>
+                <h4>${data.title}</h4>
+                <p>${data.body}</p>
+            `);
+
+            // Clear the form fields on success
+            form.reset();
+        })
+        .catch(error => {
+            console.error("Error posting data: ", error.message);
+            displayErrMsg("Error posting data: ", error.message);
+        })
+        .finally(() => {
+            // Re-enable the submit button after request
+            submitBtn.disabled = false;
+        });
+    }
+
+});
