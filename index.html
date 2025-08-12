@@ -30,6 +30,41 @@
             <!-- Error display -->
             <div id="err-msg" class="alert alert-danger d-none" role="alert"></div>
 
+            <!-- Input form -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form id="form">
+                        <!-- Methods -->
+                        <div class="mb-3">
+                            <label for="form-method-select" class="form-label">Method:</label>
+                            <select id="form-method-select" class="form-select" required>
+                                <option value="POST">Add</option>
+                                <option value="PUT">Update</option>
+                                <option value="DELETE">Delete</option>
+                            </select>
+                        </div>
+
+                        <!-- Post ID to be used when updating or deleting a post -->
+                        <div class="mb-3">
+                            <input type="number" id="post-id" name="post-id" class="form-control" min="1" max="100" placeholder="Post ID (Update/Delete)">
+                        </div>
+
+                        <!-- Post title -->
+                        <div class="mb-3">
+                            <input type="text" id="post-title" name="post-title" class="form-control" placeholder="Post Title (Add/Update)">
+                        </div>
+
+                        <!-- Post content -->
+                        <div class="mb-3">
+                            <textarea id="post-content" name="post-content" class="form-control" rows="4" placeholder="Post Content (Add/Update)"></textarea>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button id="form-submit-btn" type="submit" class="btn btn-primary w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </main>
 </body>
